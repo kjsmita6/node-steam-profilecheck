@@ -10,7 +10,7 @@
 var ProfileCheck = require('../'); //change to steam-profilecheck if not running from same directory
 
 var Bot = new ProfileCheck('username', 'password', { //enter username and password here
-	guardCode: '55QKD', //steam-guard code, comment out when sentry file is generated
+	guardCode: 'XXXXX', //steam-guard code, comment out when sentry file is generated
 	
 	//General profile options
 	gamesPlayed: [440], //array of appid integers for the bot to idle in
