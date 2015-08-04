@@ -1,18 +1,19 @@
 {
-  "name": "node-steam-profilecheck",
+  "name": "steam-profilecheck",
   "version": "1.0.0",
   "description": "Checks Steam API (optional steamrep) for private profiles and denies friend requests from them",
-  "main": "node-steam-profilecheck.js",
+  "main": "profilecheck.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "true"
+    "url": "https://github.com/dragonbanshee/node-steam-profilecheck"
   },
   "keywords": [
     "steam",
-    "steamrep"
+    "steamrep",
+    "private"
   ],
   "author": "Kyle Smith",
   "license": "MIT",
