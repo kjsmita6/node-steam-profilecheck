@@ -91,7 +91,8 @@ prototype.logOn = function() {
 }
 
 prototype.playGame = function(games) {
-	this.steamUser.gamesPlayed({ 'games_played': [{ 'game_id': parseInt(games.toString()) }] });
+	var that = this;
+	this.steamUser.gamesPlayed({ "games_played": [{ "game_id": parseInt(games.toString()) }] });
 	this.logger.debug('Playing game(s) ' + games.toString());
 }
 
@@ -220,6 +221,7 @@ prototype._onLogOnResponse = function (response) {
     var that = this;
     if (response.eresult === Steam.EResult.OK) {
         this.logger.info('Logged into Steam!');
+		this.steamFriends.setPersonaState(Steam.EPersonaState = 1);
         this.steamUser.gamesPlayed({ 'games_played': [{ 'game_id': parseInt(that.gamesPlayed.toString()) }] });
         this.steamWebLogOn.webLogOn(function (webSessionID, cookies) {
             GetSteamAPIKey({
