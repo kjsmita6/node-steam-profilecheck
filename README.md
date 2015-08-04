@@ -9,12 +9,6 @@ Once you have node and npm installed, type this command in shell, cmd, powershel
 npm install steam-profilecheck
 ```
 
-<i>Note: this is currently not on npm yet. At the moment it can be installed via 
-```
-npm install git://github.com/dragonbanshee/node-steam-profilecheck
-```
-</i>
-
 Once it's installed, you will need to create your config file, you may use the one in the examples folder, or you can create one anywhere. It must follow the same structure as the one in example.js.
 
 # Documentation
