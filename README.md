@@ -1,4 +1,6 @@
 # node-steam-profilecheck
+[![Codacy Badge](https://www.codacy.com/project/badge/ceef7d33e77e4c8e80ca3a65b3af2e95)](https://www.codacy.com/app/dragonbanshee/node-steam-profilecheck)
+
 A module that blocks any incoming friend requests from private profiles (or optionally scammers)
 
 # Installation
