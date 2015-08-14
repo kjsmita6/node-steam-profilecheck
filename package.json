@@ -1,6 +1,6 @@
 {
   "name": "steam-profilecheck",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Checks Steam API (optional steamrep) for private profiles and denies friend requests from them",
   "main": "profilecheck.js",
   "scripts": {
