@@ -8,35 +8,35 @@ var crypto = require('crypto');
 
 var ProfileCheck = function(username, password, options) {
 	var that = this;
-	
+
 	this.username = username;
 	this.password = password;
 	this.options = options;
-	
+
 	this.steamClient = new Steam.SteamClient();
 	this.steamUser = new Steam.SteamUser(that.steamClient);
 	this.steamFriends = new Steam.SteamFriends(that.steamClient);
-	
+
 	this.steamWebLogOn = new SteamWebLogOn(that.steamClient, that.steamUser);
-	
+
 	this.logger = new Winston.Logger;
-	
-	this.apiKey = undefined;
+
+	this.apiKey = options.apikey || undefined;
 	this.gamesPlayed = options.gamesPlayed || [];
 	this.sentryfile = options.sentryfile || username + '.sentry';
 	this.guardCode = options.guardCode || undefined;
 	this.steamrep = options.steamrep || true;
-	
+
 	this.logger.add(Winston.transports.Console, {
 		colorize: options.log_colorize ? options.log_colorize : true,
 		timestamp: options.log_timestamp ? options.log_timestamp : true,
 		level: 'silly',
 		json: false
 	});
-	
+
 	if(fs.existsSync(this.sentryfile)) this.logger.info('Using sentryfile as defined by options: ' + this.sentryfile);
 	else this.logger.warn('Sentry file ' + this.sentryfile + ' doesn\'t exist and will be created on successful logon');
-	
+
 	this.steamClient.on('error', function() { that._onError(); });
 	this.steamClient.on('connected', function() { that._onConnected(); });
 	this.steamClient.on('loggedOff', function(res) { that._onLoggedOff(res); });
@@ -182,7 +182,7 @@ prototype.checkProfile = function(steamID) {
 				}
 			}
 		});
-		
+
 		setTimeout(function() {
 			if (!createdprofile || privateprofile) {
 				that.steamFriends.removeFriend(steamID);
@@ -194,11 +194,11 @@ prototype.checkProfile = function(steamID) {
 		}, 3000);
 	}
 }
-		
-		
-		
-		
-//Event handlers 
+
+
+
+
+//Event handlers
 
 prototype._onError = function() {
 	this.logger.error('Disconnected from Steam, reconnecting...');
@@ -222,16 +222,18 @@ prototype._onLogOnResponse = function (response) {
 		this.steamFriends.setPersonaState(Steam.EPersonaState = 1);
         this.steamUser.gamesPlayed({ 'games_played': [{ 'game_id': parseInt(that.gamesPlayed.toString()) }] });
         this.steamWebLogOn.webLogOn(function (webSessionID, cookies) {
-            GetSteamAPIKey({
-                sessionID: webSessionID,
-                webCookie: cookies
-            }, function (e, api) {
-                if (e) that.logger.error(e);
-                else {
-                    that.apikey = api;
-                    that.logger.info('Logged into steam web');
-                }
-            });
+            if(!that.apiKey) {
+							GetSteamAPIKey({
+	                sessionID: webSessionID,
+	                webCookie: cookies
+	            }, function (e, api) {
+	                if (e) that.logger.error(e);
+	                else {
+	                    that.apiKey = api;
+	                    that.logger.info('Logged into steam web');
+	                }
+	            });
+						}
         });
     }
     else {
@@ -243,7 +245,7 @@ prototype._onLogOnResponse = function (response) {
 prototype._onUpdateMachineAuth = function(sentry, callback) {
 	this.logger.debug('New sentry: ' + sentry.filename);
 	fs.writeFileSync(this.sentryfile, sentry.bytes);
-	
+
 	callback({
 		sha_file: crypto.createHash('sha1').update(sentry.bytes).digest()
 	});
@@ -256,4 +258,4 @@ prototype._onFriend = function(steamID, relationship) {
 	}
 }
 
-module.exports = ProfileCheck;		
+module.exports = ProfileCheck;
