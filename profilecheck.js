@@ -60,11 +60,14 @@ prototype.logOn = function() {
 	var sha = '';
 	this.logger.debug('Logging in bot ' + this.username);
 	try {
+		if(fs.existsSync(that.sentryfile)) {
+			var file = fs.readFileSync(that.sentryfile);
+			sha = crypto
+						.createHash('sha1')
+						.update(file)
+						.digest();
+		}
 		if(this.guardCode) {
-			if(fs.existsSync(that.sentryfile)) {
-				var file = fs.readFileSync(that.sentryfile);
-				sha = crypto.createHash('sha1').update(file).digest();
-			}
 			this.steamUser.logOn({
 				account_name: that.username,
 				password: that.password,
@@ -73,10 +76,6 @@ prototype.logOn = function() {
 			});
 		}
 		else {
-			if(fs.existsSync(that.sentryfile)) {
-				var file = fs.readFileSync(that.sentryfile);
-				sha = crypto.createHash('sha1').update(file).digest();
-			}
 			this.steamUser.logOn({
 				account_name: that.username,
 				password: that.password,
@@ -91,7 +90,6 @@ prototype.logOn = function() {
 }
 
 prototype.playGame = function(games) {
-	var that = this;
 	this.steamUser.gamesPlayed({ "games_played": [{ "game_id": parseInt(games.toString()) }] });
 	this.logger.debug('Playing game(s) ' + games.toString());
 }
@@ -243,7 +241,6 @@ prototype._onLogOnResponse = function (response) {
 }
 
 prototype._onUpdateMachineAuth = function(sentry, callback) {
-	var that = this;
 	this.logger.debug('New sentry: ' + sentry.filename);
 	fs.writeFileSync(this.sentryfile, sentry.bytes);
 	
@@ -253,7 +250,6 @@ prototype._onUpdateMachineAuth = function(sentry, callback) {
 }
 
 prototype._onFriend = function(steamID, relationship) {
-	var that = this;
 	if(relationship === Steam.EFriendRelationship.RequestRecipient) {
 		this.logger.debug('User with steamID ' + steamID + ' added me, checking profile...');
 		this.checkProfile(steamID);
